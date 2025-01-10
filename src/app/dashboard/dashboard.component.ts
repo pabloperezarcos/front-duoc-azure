@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MsalService } from '@azure/msal-angular';
 import { Router } from '@angular/router';
+import { AlertaService, AlertaMedica } from '../services/alerta.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,7 +12,8 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent implements OnInit {
   // Lista de alertas médicas
-  alertas: any[] = [];
+  //alertas: any[] = [];
+  alertas: AlertaMedica[] = [];
 
   // Variables de control
   escaneando: boolean = false;
@@ -22,25 +24,39 @@ export class DashboardComponent implements OnInit {
   tipos = ['Cardiaca', 'Neurológica', 'Respiratoria'];
   niveles = ['Alta', 'Media', 'Baja'];
 
-  constructor(private msalService: MsalService, private router: Router) { }
+  constructor(
+    private msalService: MsalService,
+    private router: Router,
+    private alertaService: AlertaService
+  ) { }
 
   ngOnInit(): void {
-    this.alertas = []; // Inicializa sin alertas
+    // Cargar alertas desde el backend al iniciar
+    this.alertaService.obtenerAlertas().subscribe({
+      next: (data) => (this.alertas = data),
+      error: (error) => console.error('Error al cargar alertas:', error),
+    });
   }
+
 
   // Iniciar generación de alertas
   iniciarEscaner(): void {
     if (!this.escaneando) {
       this.escaneando = true;
       this.intervaloID = setInterval(() => {
-        const nuevaAlerta = {
-          nombrePaciente: this.nombres[Math.floor(Math.random() * this.nombres.length)],
-          tipoAlerta: this.tipos[Math.floor(Math.random() * this.tipos.length)],
-          nivelAlerta: this.niveles[Math.floor(Math.random() * this.niveles.length)],
-          fechaAlerta: new Date().toLocaleString()
+        const nuevaAlerta: AlertaMedica = {
+          nombrePaciente: `Paciente ${Math.floor(Math.random() * 100)}`,
+          tipoAlerta: ['Cardiaca', 'Respiratoria', 'Neurológica'][Math.floor(Math.random() * 3)],
+          nivelAlerta: ['Alta', 'Media', 'Baja'][Math.floor(Math.random() * 3)],
+          fechaAlerta: new Date().toISOString(),
         };
-        this.alertas.push(nuevaAlerta);
-      }, 5000); // Genera cada 5 segundos
+
+        // Guardar alerta en el backend
+        this.alertaService.guardarAlerta(nuevaAlerta).subscribe({
+          next: (alerta) => this.alertas.push(alerta),
+          error: (error) => console.error('Error al guardar alerta:', error),
+        });
+      }, 5000);
     }
   }
 
@@ -51,8 +67,18 @@ export class DashboardComponent implements OnInit {
   }
 
   // Eliminar una alerta
+  /*   eliminarAlerta(index: number): void {
+      this.alertas.splice(index, 1);
+    } */
+
   eliminarAlerta(index: number): void {
-    this.alertas.splice(index, 1);
+    const alertaId = this.alertas[index].idAlerta;
+    if (alertaId) {
+      this.alertaService.eliminarAlerta(alertaId).subscribe({
+        next: () => this.alertas.splice(index, 1),
+        error: (error) => console.error('Error al eliminar alerta:', error),
+      });
+    }
   }
 
   // Editar una alerta (puedes abrir un formulario modal)
