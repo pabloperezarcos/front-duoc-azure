@@ -3,9 +3,11 @@ import { CommonModule } from '@angular/common';
 import { MsalService } from '@azure/msal-angular';
 import { Router } from '@angular/router';
 import { AlertaService, AlertaMedica } from '../services/alerta.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
@@ -27,7 +29,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private msalService: MsalService,
     private router: Router,
-    private alertaService: AlertaService
+    private alertaService: AlertaService,
+    private httpClient: HttpClient
   ) { }
 
   ngOnInit(): void {
