@@ -1,0 +1,124 @@
+.dashboard {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f4f6f9;
+
+    h1 {
+        text-align: center;
+        color: #007bff;
+        margin-bottom: 20px;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+
+            &:first-of-type {
+                background-color: #28a745;
+                color: #fff;
+            }
+
+            &:last-of-type {
+                background-color: #dc3545;
+                color: #fff;
+            }
+
+            &:disabled {
+                background-color: #ccc;
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    .dashboard-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 20px;
+
+        .logo {
+            width: 60px;
+            height: auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #007bff;
+            margin: 0;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+
+            &:hover {
+                background-color: #c82333;
+            }
+        }
+    }
+
+    .alertas-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 auto;
+        background-color: #fff;
+
+        thead {
+            background-color: #007bff;
+            color: #fff;
+
+            th {
+                padding: 10px;
+                text-align: left;
+            }
+        }
+
+        tbody {
+            tr {
+                &:nth-child(even) {
+                    background-color: #f2f2f2;
+                }
+            }
+
+            td {
+                padding: 10px;
+                text-align: left;
+
+                button {
+                    margin-right: 5px;
+                    padding: 5px 10px;
+                    font-size: 12px;
+                    border: none;
+                    border-radius: 3px;
+                    cursor: pointer;
+
+                    &:first-of-type {
+                        background-color: #ffc107;
+                        color: #fff;
+                    }
+
+                    &:last-of-type {
+                        background-color: #dc3545;
+                        color: #fff;
+                    }
+                }
+            }
+        }
+    }
+}
