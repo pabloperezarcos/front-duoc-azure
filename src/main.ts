@@ -1,6 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { importProvidersFrom } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { provideHttpClient } from '@angular/common/http';
 
 import { AppComponent } from './app/app.component';
 import { appConfig } from './app/app.config';
@@ -28,6 +29,7 @@ import { PublicClientApplication, InteractionType } from '@azure/msal-browser';
   bootstrapApplication(AppComponent, {
     providers: [
       ...appConfig.providers,
+      provideHttpClient(),
       importProvidersFrom(
         BrowserModule,
         MsalModule.forRoot(
