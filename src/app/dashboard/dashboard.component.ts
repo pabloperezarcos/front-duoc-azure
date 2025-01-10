@@ -45,9 +45,13 @@ export class DashboardComponent implements OnInit {
       this.escaneando = true;
       this.intervaloID = setInterval(() => {
         const nuevaAlerta: AlertaMedica = {
-          nombrePaciente: `Paciente ${Math.floor(Math.random() * 100)}`,
-          tipoAlerta: ['Cardiaca', 'Respiratoria', 'Neurológica'][Math.floor(Math.random() * 3)],
-          nivelAlerta: ['Alta', 'Media', 'Baja'][Math.floor(Math.random() * 3)],
+          // Selecciona un nombre aleatorio de la lista
+          nombrePaciente: this.nombres[Math.floor(Math.random() * this.nombres.length)],
+          // Selecciona un tipo de alerta aleatorio
+          tipoAlerta: this.tipos[Math.floor(Math.random() * this.tipos.length)],
+          // Selecciona un nivel de alerta aleatorio
+          nivelAlerta: this.niveles[Math.floor(Math.random() * this.niveles.length)],
+          // Fecha actual
           fechaAlerta: new Date().toISOString(),
         };
 
