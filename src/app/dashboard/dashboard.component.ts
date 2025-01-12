@@ -1,21 +1,33 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MsalService } from '@azure/msal-angular';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MsalService } from '@azure/msal-angular';
 import { AlertaService, AlertaMedica } from '../services/alerta.service';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
   // Lista de alertas médicas
-  //alertas: any[] = [];
   alertas: AlertaMedica[] = [];
+  alertasFiltradas: AlertaMedica[] = []; // Lista filtrada de alerta
+  mostrarModal: boolean = false;
+
+  alertaEditando: AlertaMedica = {
+    idAlerta: 0,
+    nombrePaciente: '',
+    tipoAlerta: '',
+    nivelAlerta: '',
+    fechaAlerta: new Date().toISOString(),
+  };
+
+  filtroNombre: string = ''; // Valor del filtro por nombre
+  filtroNivel: string = ''; // Valor del filtro por nivel de alerta
 
   // Variables de control
   escaneando: boolean = false;
@@ -29,18 +41,33 @@ export class DashboardComponent implements OnInit {
   constructor(
     private msalService: MsalService,
     private router: Router,
-    private alertaService: AlertaService,
-    private httpClient: HttpClient
+    private alertaService: AlertaService
   ) { }
 
   ngOnInit(): void {
     // Cargar alertas desde el backend al iniciar
     this.alertaService.obtenerAlertas().subscribe({
-      next: (data) => (this.alertas = data),
+      next: (data) => {
+        this.alertas = data;
+        this.alertasFiltradas = data;
+      },
       error: (error) => console.error('Error al cargar alertas:', error),
     });
   }
 
+  filterPacientes(): void {
+    this.alertasFiltradas = this.alertas.filter((alerta) => {
+      const coincideNombre =
+        !this.filtroNombre ||
+        alerta.nombrePaciente
+          .toLowerCase()
+          .includes(this.filtroNombre.toLowerCase());
+      const coincideNivel =
+        !this.filtroNivel || alerta.nivelAlerta === this.filtroNivel;
+
+      return coincideNombre && coincideNivel;
+    });
+  }
 
   // Iniciar generación de alertas
   iniciarEscaner(): void {
@@ -88,17 +115,49 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // Editar una alerta (puedes abrir un formulario modal)
+  // Mostrar el modal para editar una alerta
   editarAlerta(index: number): void {
-    const alerta = this.alertas[index];
-    alert(`Editar alerta: ${JSON.stringify(alerta)}`);
-    // Aquí podrías implementar un modal o navegación a otro componente para la edición.
+    this.alertaEditando = { ...this.alertas[index] };
+    this.mostrarModal = true; // Muestra el modal
+    console.log('Modal visible:', this.mostrarModal);
+  }
+
+  // Guardar los cambios en la alerta
+  guardarAlerta(): void {
+    if (this.alertaEditando) {
+      const index = this.alertas.findIndex(
+        (alerta) => alerta.idAlerta === this.alertaEditando?.idAlerta
+      );
+
+      if (index !== -1 && this.alertaEditando.idAlerta) { // Asegúrate de que el id exista
+        // Llamada al servicio para actualizar la alerta
+        this.alertaService.actualizarAlerta(this.alertaEditando.idAlerta, this.alertaEditando).subscribe({
+          next: (alertaActualizada) => {
+            this.alertas[index] = alertaActualizada; // Actualizar la lista de alertas
+            this.cerrarModal();
+          },
+          error: (error) => console.error('Error al actualizar la alerta:', error),
+        });
+      }
+    }
+  }
+
+  // Cerrar el modal
+  cerrarModal(): void {
+    this.alertaEditando = {
+      idAlerta: 0,
+      nombrePaciente: '',
+      tipoAlerta: '',
+      nivelAlerta: '',
+      fechaAlerta: new Date().toISOString(),
+    };
+    this.mostrarModal = false;
   }
 
   logout(): void {
     this.msalService.logoutPopup().subscribe({
       next: () => {
-        console.log('Logout successful');
+        console.log('Logout completado');
         this.router.navigate(['/login']); // Redirige al login
       },
       error: (error) => console.error('Logout error:', error)
