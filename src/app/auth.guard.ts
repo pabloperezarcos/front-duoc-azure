@@ -14,7 +14,7 @@ export class AuthGuard implements CanActivate {
     if (account) {
       return true;
     } else {
-      console.warn('No active account found, redirecting to login.');
+      console.warn('No se encontró una cuenta activa, redirigiendo al inicio de sesión.');
       this.router.navigate(['/']);
       return false;
     }
