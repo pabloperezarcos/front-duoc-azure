@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "compodoc": "npx @compodoc/compodoc -p tsconfig.app.json -s",
     "test": "ng test"
   },
   "private": true,
