@@ -5,6 +5,9 @@ import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { AlertaService, AlertaMedica } from '../services/alerta.service';
 
+/**
+ * Este componente maneja el dashboard de alertas médicas.
+ */
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -13,11 +16,24 @@ import { AlertaService, AlertaMedica } from '../services/alerta.service';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
-  // Lista de alertas médicas
+  /**
+   * Lista completa de alertas médicas obtenidas del backend.
+   */
   alertas: AlertaMedica[] = [];
-  alertasFiltradas: AlertaMedica[] = []; // Lista filtrada de alerta
+
+  /**
+   * Lista de alertas médicas filtradas para mostrar en la tabla.
+   */
+  alertasFiltradas: AlertaMedica[] = [];
+
+  /**
+   * Estado de visibilidad del modal para editar alertas.
+   */
   mostrarModal: boolean = false;
 
+  /**
+   * Alerta médica que se está editando actualmente.
+   */
   alertaEditando: AlertaMedica = {
     idAlerta: 0,
     nombrePaciente: '',
@@ -26,24 +42,57 @@ export class DashboardComponent implements OnInit {
     fechaAlerta: new Date().toISOString(),
   };
 
-  filtroNombre: string = ''; // Valor del filtro por nombre
-  filtroNivel: string = ''; // Valor del filtro por nivel de alerta
+  /**
+ * Filtro por nombre de paciente.
+ */
+  filtroNombre: string = '';
 
-  // Variables de control
+  /**
+ * Filtro por nivel de alerta médica.
+ */
+  filtroNivel: string = '';
+
+  /**
+   * Indicador de si el escáner de alertas está en ejecución.
+   */
   escaneando: boolean = false;
+
+  /**
+   * ID del intervalo para la generación de alertas automáticas.
+   */
   intervaloID: any;
 
-  // Datos predefinidos para generación de alertas
+  /**
+   * Lista de nombres de pacientes predefinidos para generar alertas.
+   */
   nombres = ['Juan Pérez', 'María López', 'Carlos García', 'Ana Martínez'];
+
+  /**
+   * Lista de tipos de alerta predefinidos para generar alertas.
+   */
   tipos = ['Cardiaca', 'Neurológica', 'Respiratoria'];
+
+  /**
+   * Lista de niveles de alerta predefinidos para generar alertas.
+   */
   niveles = ['Alta', 'Media', 'Baja'];
 
+  /**
+   * Constructor del componente.
+   * @param msalService Servicio de autenticación con MSAL.
+   * @param router Router para la navegación entre componentes.
+   * @param alertaService Servicio para gestionar alertas médicas.
+   */
   constructor(
     private msalService: MsalService,
     private router: Router,
     private alertaService: AlertaService
   ) { }
 
+  /**
+   * Hook que se ejecuta al inicializar el componente.
+   * Carga las alertas médicas desde el backend.
+   */
   ngOnInit(): void {
     // Cargar alertas desde el backend al iniciar
     this.alertaService.obtenerAlertas().subscribe({
@@ -55,6 +104,9 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  /**
+   * Filtra las alertas médicas en base al nombre del paciente y al nivel de alerta.
+   */
   filterPacientes(): void {
     this.alertasFiltradas = this.alertas.filter((alerta) => {
       const coincideNombre =
@@ -69,7 +121,9 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  // Iniciar generación de alertas
+  /**
+   * Inicia la generación automática de alertas médicas.
+   */
   iniciarEscaner(): void {
     if (!this.escaneando) {
       this.escaneando = true;
@@ -94,17 +148,18 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // Detener generación de alertas
+  /**
+   * Detiene la generación automática de alertas médicas.
+   */
   detenerEscaner(): void {
     this.escaneando = false;
     clearInterval(this.intervaloID);
   }
 
-  // Eliminar una alerta
-  /*   eliminarAlerta(index: number): void {
-      this.alertas.splice(index, 1);
-    } */
-
+  /**
+   * Elimina una alerta médica de la lista.
+   * @param index Índice de la alerta a eliminar.
+   */
   eliminarAlerta(index: number): void {
     const alertaId = this.alertas[index].idAlerta;
     if (alertaId) {
@@ -115,14 +170,19 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // Mostrar el modal para editar una alerta
+  /**
+    * Abre el modal para editar una alerta médica.
+    * @param index Índice de la alerta a editar.
+    */
   editarAlerta(index: number): void {
     this.alertaEditando = { ...this.alertas[index] };
     this.mostrarModal = true; // Muestra el modal
     console.log('Modal visible:', this.mostrarModal);
   }
 
-  // Guardar los cambios en la alerta
+  /**
+   * Guarda los cambios realizados en una alerta médica.
+   */
   guardarAlerta(): void {
     if (this.alertaEditando) {
       const index = this.alertas.findIndex(
@@ -142,7 +202,9 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // Cerrar el modal
+  /**
+   * Cierra el modal de edición y resetea la alerta en edición.
+   */
   cerrarModal(): void {
     this.alertaEditando = {
       idAlerta: 0,
@@ -154,6 +216,9 @@ export class DashboardComponent implements OnInit {
     this.mostrarModal = false;
   }
 
+  /**
+   * Cierra la sesión del usuario actual y redirige al login.
+   */
   logout(): void {
     this.msalService.logoutPopup().subscribe({
       next: () => {
