@@ -17,7 +17,7 @@ import { PublicClientApplication, InteractionType } from '@azure/msal-browser';
     auth: {
       clientId: '4715019b-f0dd-4c3d-9c5d-c6cabcc945b9',
       authority: 'https://login.microsoftonline.com/154990ff-5d59-40e6-ad84-28aacd6d84e0',
-      redirectUri: 'http://localhost:4200',
+      redirectUri: 'https://www.carnesag.cl/duoc/',
     },
     // system: { asyncJIT: true }  // normalmente ya viene true por defecto en versiones nuevas
   });
