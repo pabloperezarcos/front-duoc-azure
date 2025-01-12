@@ -3,6 +3,22 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 
+/**
+ * Configuración principal de la aplicación Angular.
+ * 
+ * Este archivo define los proveedores globales necesarios para el correcto funcionamiento de la aplicación,
+ * como el enrutador y la detección de cambios optimizada con zonas.
+ */
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes)]
+  providers: [
+    /**
+     * Configura la detección de cambios de Angular utilizando zonas.
+     * - `eventCoalescing: true`: Optimiza los eventos de cambio para evitar múltiples detecciones innecesarias.
+     */
+    provideZoneChangeDetection({ eventCoalescing: true }),
+
+    /**
+     * Proporciona las rutas definidas en el archivo `app.routes.ts` al enrutador global.
+     */
+    provideRouter(routes)]
 };
