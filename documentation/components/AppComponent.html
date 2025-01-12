@@ -120,6 +120,15 @@
 </p>
 
 
+    <p class="comment">
+        <h3>Description</h3>
+    </p>
+    <p class="comment">
+        <p>Componente raíz de la aplicación.</p>
+<p>Este componente actúa como el contenedor principal de la aplicación Angular.
+Renderiza las rutas proporcionadas por el <code>RouterOutlet</code> y define la estructura base de la interfaz.</p>
+
+    </p>
 
 
 
@@ -145,6 +154,10 @@
                 <td class="col-md-9"><code>app-root</code></td>
             </tr>
 
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
 
             <tr>
                 <td class="col-md-3">imports</td>
@@ -239,10 +252,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/app/app.component.ts:12</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="21" class="link-to-prism">src/app/app.component.ts:21</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Título de la aplicación, utilizado como referencia en diversas secciones.</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -255,14 +274,23 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component } from &#x27;@angular/core&#x27;;
 import { RouterOutlet } from &#x27;@angular/router&#x27;;
 
-
+/**
+ * Componente raíz de la aplicación.
+ * 
+ * Este componente actúa como el contenedor principal de la aplicación Angular. 
+ * Renderiza las rutas proporcionadas por el &#x60;RouterOutlet&#x60; y define la estructura base de la interfaz.
+ */
 @Component({
   selector: &#x27;app-root&#x27;,
+  standalone: true,
   imports: [RouterOutlet],
   templateUrl: &#x27;./app.component.html&#x27;,
   styleUrl: &#x27;./app.component.scss&#x27;
 })
 export class AppComponent {
+  /**
+   * Título de la aplicación, utilizado como referencia en diversas secciones.
+   */
   title &#x3D; &#x27;Front-Duoc-Azure&#x27;;
 
 }</code></pre>

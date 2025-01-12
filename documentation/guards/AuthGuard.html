@@ -121,6 +121,13 @@
             </p>
 
 
+                <p class="comment">
+                <h3>Description</h3>
+                </p>
+                <p class="comment">
+                    <p>Guard para proteger rutas mediante la autenticación de MSAL (Microsoft Authentication Library).</p>
+
+                </p>
 
 
 
@@ -164,12 +171,14 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="8" class="link-to-prism">src/app/auth.guard.ts:8</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/app/auth.guard.ts:11</a></div>
                             </td>
                         </tr>
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Constructor del guard.</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -178,6 +187,7 @@
                                                 <td>Name</td>
                                                     <td>Type</td>
                                                 <td>Optional</td>
+                                                    <td>Description</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -192,6 +202,10 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <p>Servicio de MSAL para manejar la autenticación.</p>
+
+                                                        </td>
                                                 </tr>
                                                 <tr>
                                                         <td>router</td>
@@ -204,6 +218,10 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <p>Servicio de enrutamiento para redirigir a otras rutas.</p>
+
+                                                        </td>
                                                 </tr>
                                         </tbody>
                                     </table>
@@ -239,19 +257,25 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="11"
-                                    class="link-to-prism">src/app/auth.guard.ts:11</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="23"
+                                    class="link-to-prism">src/app/auth.guard.ts:23</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Verifica si el usuario tiene una sesión activa para permitir el acceso a la ruta protegida.</p>
+</div>
 
                         <div class="io-description">
                             <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
 
                         </div>
+                            <div class="io-description">
+                                <p><code>true</code> si el usuario está autenticado, de lo contrario, redirige al inicio de sesión y retorna <code>false</code>.</p>
+
+                            </div>
                 </td>
             </tr>
         </tbody>
@@ -265,18 +289,32 @@
 import { CanActivate, Router } from &#x27;@angular/router&#x27;;
 import { MsalService } from &#x27;@azure/msal-angular&#x27;;
 
+/**
+ * Guard para proteger rutas mediante la autenticación de MSAL (Microsoft Authentication Library).
+ */
 @Injectable({
   providedIn: &#x27;root&#x27;
 })
 export class AuthGuard implements CanActivate {
+  /**
+ * Constructor del guard.
+ * @param msalService Servicio de MSAL para manejar la autenticación.
+ * @param router Servicio de enrutamiento para redirigir a otras rutas.
+ */
   constructor(private msalService: MsalService, private router: Router) { }
 
+  /**
+ * Verifica si el usuario tiene una sesión activa para permitir el acceso a la ruta protegida.
+ * @returns &#x60;true&#x60; si el usuario está autenticado, de lo contrario, redirige al inicio de sesión y retorna &#x60;false&#x60;.
+ */
   canActivate(): boolean {
     const account &#x3D; this.msalService.instance.getActiveAccount();
 
     if (account) {
+      // Usuario autenticado
       return true;
     } else {
+      // Usuario no autenticado, redirigir al login
       console.warn(&#x27;No se encontró una cuenta activa, redirigiendo al inicio de sesión.&#x27;);
       this.router.navigate([&#x27;/&#x27;]);
       return false;

@@ -124,6 +124,13 @@
 </p>
 
 
+    <p class="comment">
+        <h3>Description</h3>
+    </p>
+    <p class="comment">
+        <p>Este componente maneja el inicio y cierre de sesión utilizando MSAL.</p>
+
+    </p>
 
 
     <p class="comment">
@@ -155,6 +162,10 @@
                 <td class="col-md-9"><code>app-login</code></td>
             </tr>
 
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
 
             <tr>
                 <td class="col-md-3">imports</td>
@@ -248,12 +259,14 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/app/login/login.component.ts:14</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/app/login/login.component.ts:26</a></div>
                             </td>
                         </tr>
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Constructor del componente.</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -262,6 +275,7 @@
                                                 <td>Name</td>
                                                     <td>Type</td>
                                                 <td>Optional</td>
+                                                    <td>Description</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -276,6 +290,10 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <p>Servicio de autenticación con MSAL.</p>
+
+                                                        </td>
                                                 </tr>
                                                 <tr>
                                                         <td>router</td>
@@ -288,6 +306,10 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <p>Router para la navegación entre componentes.</p>
+
+                                                        </td>
                                                 </tr>
                                         </tbody>
                                     </table>
@@ -327,14 +349,17 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="28"
-                                    class="link-to-prism">src/app/login/login.component.ts:28</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="52"
+                                    class="link-to-prism">src/app/login/login.component.ts:52</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Inicia el proceso de login mediante un popup.
+Si el login es exitoso, redirige al dashboard.</p>
+</div>
 
                         <div class="io-description">
                             <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -364,14 +389,17 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="50"
-                                    class="link-to-prism">src/app/login/login.component.ts:50</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="77"
+                                    class="link-to-prism">src/app/login/login.component.ts:77</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Cierra la sesión del usuario actual.
+Si el logout es exitoso, redirige al login.</p>
+</div>
 
                         <div class="io-description">
                             <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -401,14 +429,17 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="18"
-                                    class="link-to-prism">src/app/login/login.component.ts:18</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="38"
+                                    class="link-to-prism">src/app/login/login.component.ts:38</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Hook que se ejecuta al inicializar el componente.
+Comprueba si el usuario está autenticado y, de ser así, redirige al dashboard.</p>
+</div>
 
                         <div class="io-description">
                             <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -442,10 +473,17 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/app/login/login.component.ts:14</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/app/login/login.component.ts:26</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Estado de la sesión del usuario.
+<code>true</code> si el usuario está autenticado, de lo contrario <code>false</code>.</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -473,10 +511,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/app/login/login.component.ts:13</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">src/app/login/login.component.ts:20</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Título del sistema mostrado en el login.</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -491,18 +535,38 @@ import { MsalService } from &#x27;@azure/msal-angular&#x27;;
 import { CommonModule } from &#x27;@angular/common&#x27;;
 import { Router } from &#x27;@angular/router&#x27;;
 
+/**
+ * Este componente maneja el inicio y cierre de sesión utilizando MSAL.
+ */
 @Component({
   selector: &#x27;app-login&#x27;,
+  standalone: true,
   imports: [CommonModule],
   templateUrl: &#x27;./login.component.html&#x27;,
   styleUrls: [&#x27;./login.component.scss&#x27;]
 })
 export class LoginComponent implements OnInit {
+  /**
+   * Título del sistema mostrado en el login.
+   */
   title &#x3D; &#x27;Front-Duoc-Azure&#x27;;
+
+  /**
+   * Estado de la sesión del usuario.
+   * &#x60;true&#x60; si el usuario está autenticado, de lo contrario &#x60;false&#x60;.
+   */
   isLoggedIn &#x3D; false;
 
+  /**
+   * Constructor del componente.
+   * @param msalService Servicio de autenticación con MSAL.
+   * @param router Router para la navegación entre componentes.
+   */
   constructor(private msalService: MsalService, private router: Router) { }
-
+  /**
+    * Hook que se ejecuta al inicializar el componente.
+    * Comprueba si el usuario está autenticado y, de ser así, redirige al dashboard.
+    */
   ngOnInit(): void {
     const account &#x3D; this.msalService.instance.getActiveAccount();
     this.isLoggedIn &#x3D; !!account;
@@ -513,6 +577,10 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  /**
+   * Inicia el proceso de login mediante un popup.
+   * Si el login es exitoso, redirige al dashboard.
+   */
   login() {
     this.msalService.loginPopup().subscribe({
       next: (result) &#x3D;&gt; {
@@ -534,7 +602,10 @@ export class LoginComponent implements OnInit {
     });
   }
 
-
+  /**
+    * Cierra la sesión del usuario actual.
+    * Si el logout es exitoso, redirige al login.
+    */
   logout() {
     this.msalService.logoutPopup().subscribe({
       next: () &#x3D;&gt; {

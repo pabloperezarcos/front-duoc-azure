@@ -126,6 +126,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Representa una alerta médica.</p>
+
+            </p>
 
 
         <section data-compodoc="block-index">
@@ -213,6 +220,12 @@
 
 
 
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Fecha y hora en la que se generó la alerta.</p>
+</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered">
@@ -251,6 +264,13 @@
 
 
 
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Identificador único de la alerta.
+Opcional, ya que lo genera el backend.</p>
+</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered">
@@ -284,6 +304,12 @@
 
 
 
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Nivel de alerta (e.g., Alta, Media, Baja).</p>
+</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered">
@@ -317,6 +343,12 @@
 
 
 
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Nombre del paciente asociado a la alerta.</p>
+</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered">
@@ -350,6 +382,12 @@
 
 
 
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Tipo de alerta (e.g., Cardiaca, Neurológica, Respiratoria).</p>
+</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
             </section>
@@ -361,34 +399,87 @@
 import { HttpClient } from &#x27;@angular/common/http&#x27;;
 import { Observable } from &#x27;rxjs&#x27;;
 
+/**
+ * Representa una alerta médica.
+ */
 export interface AlertaMedica {
-  idAlerta?: number; // Opcional, ya que se genera en el backend
+  /**
+   * Identificador único de la alerta.
+   * Opcional, ya que lo genera el backend.
+   */
+  idAlerta?: number;
+
+  /**
+   * Nombre del paciente asociado a la alerta.
+   */
   nombrePaciente: string;
+
+  /**
+   * Tipo de alerta (e.g., Cardiaca, Neurológica, Respiratoria).
+   */
   tipoAlerta: string;
+
+  /**
+   * Nivel de alerta (e.g., Alta, Media, Baja).
+   */
   nivelAlerta: string;
+
+  /**
+   * Fecha y hora en la que se generó la alerta.
+   */
   fechaAlerta: string;
 }
 
+/**
+ * Servicio para gestionar las operaciones CRUD de las alertas médicas.
+ */
 @Injectable({
   providedIn: &#x27;root&#x27;,
 })
 export class AlertaService {
+  /**
+ * URL base de la API de alertas médicas.
+ */
   private apiUrl &#x3D; &#x27;http://localhost:8080/api/alertas&#x27;;
 
+  /**
+ * Constructor del servicio.
+ * @param http Cliente HTTP para realizar solicitudes a la API.
+ */
   constructor(private http: HttpClient) { }
 
+  /**
+ * Obtiene todas las alertas médicas desde el backend.
+ * @returns Un observable que emite una lista de alertas médicas.
+ */
   obtenerAlertas(): Observable&lt;AlertaMedica[]&gt; {
     return this.http.get&lt;AlertaMedica[]&gt;(this.apiUrl);
   }
 
+  /**
+ * Guarda una nueva alerta médica en el backend.
+ * @param alerta La alerta médica que se desea guardar.
+ * @returns Un observable que emite la alerta médica creada.
+ */
   guardarAlerta(alerta: AlertaMedica): Observable&lt;AlertaMedica&gt; {
     return this.http.post&lt;AlertaMedica&gt;(this.apiUrl, alerta);
   }
 
+  /**
+ * Actualiza una alerta médica existente en el backend.
+ * @param id El identificador único de la alerta que se desea actualizar.
+ * @param alerta Los nuevos datos de la alerta médica.
+ * @returns Un observable que emite la alerta médica actualizada.
+ */
   actualizarAlerta(id: number, alerta: AlertaMedica): Observable&lt;AlertaMedica&gt; {
     return this.http.put&lt;AlertaMedica&gt;(&#x60;${this.apiUrl}/${id}&#x60;, alerta);
   }
 
+  /**
+ * Elimina una alerta médica del backend.
+ * @param id El identificador único de la alerta que se desea eliminar.
+ * @returns Un observable que se completa cuando la operación es exitosa.
+ */
   eliminarAlerta(id: number): Observable&lt;void&gt; {
     return this.http.delete&lt;void&gt;(&#x60;${this.apiUrl}/${id}&#x60;);
   }

@@ -143,11 +143,29 @@
                 <tr>
                     <td class="col-md-4">
                         <i>Default value : </i><code>{
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes)]
+  providers: [
+    /**
+     * Configura la detección de cambios de Angular utilizando zonas.
+     * - &#x60;eventCoalescing: true&#x60;: Optimiza los eventos de cambio para evitar múltiples detecciones innecesarias.
+     */
+    provideZoneChangeDetection({ eventCoalescing: true }),
+
+    /**
+     * Proporciona las rutas definidas en el archivo &#x60;app.routes.ts&#x60; al enrutador global.
+     */
+    provideRouter(routes)]
 }</code>
                     </td>
                 </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Configuración principal de la aplicación Angular.</p>
+<p>Este archivo define los proveedores globales necesarios para el correcto funcionamiento de la aplicación,
+como el enrutador y la detección de cambios optimizada con zonas.</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
