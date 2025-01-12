@@ -12,7 +12,7 @@ import { PublicClientApplication, InteractionType } from '@azure/msal-browser';
 
 
 (async () => {
-  // 1) Creas tu instancia de MSAL:
+  // 1) Instancia Msal
   const pca = new PublicClientApplication({
     auth: {
       clientId: '4715019b-f0dd-4c3d-9c5d-c6cabcc945b9',
@@ -22,10 +22,10 @@ import { PublicClientApplication, InteractionType } from '@azure/msal-browser';
     // system: { asyncJIT: true }  // normalmente ya viene true por defecto en versiones nuevas
   });
 
-  // 2) Esperas su inicialización
+  // 2) Esperar inicialización
   await pca.initialize();
 
-  // 3) Ahora sí importas MsalModule con esa instancia
+  // 3) Importar MsalModule
   bootstrapApplication(AppComponent, {
     providers: [
       ...appConfig.providers,
