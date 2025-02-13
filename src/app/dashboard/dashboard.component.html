@@ -4,15 +4,19 @@
         <h1>Dashboard - Alertas Médicas</h1>
         <button class="logout-btn" (click)="logout()">Cerrar Sesión</button>
     </div>
+    <!-- Acciones -->
     <div class="actions">
-        <button (click)="iniciarEscaner()" [disabled]="escaneando">Iniciar Escáner</button>
-        <button (click)="detenerEscaner()" [disabled]="!escaneando">Detener Escáner</button>
-    </div>
-    <div class="status-message">
-        <p *ngIf="escaneando" class="text-info">Escáner en ejecución...</p>
-        <p *ngIf="!escaneando" class="text-warning">Escáner detenido.</p>
+        <button class="btn btn-success" (click)="iniciarEscaner()" [disabled]="escaneando">Iniciar Escáner</button>
+        <button class="btn btn-warning" (click)="detenerEscaner()" [disabled]="!escaneando">Detener Escáner</button>
     </div>
 
+    <!-- Estado del Escáner -->
+    <div class="status-message">
+        <p *ngIf="escaneando" class="text-info">🟢 Escáner en ejecución...</p>
+        <p *ngIf="!escaneando" class="text-warning">🔴 Escáner detenido.</p>
+    </div>
+
+    <!-- Filtros -->
     <div class="filter-container">
         <label for="nombre">Filtrar por nombre:</label>
         <input type="text" id="nombre" [(ngModel)]="filtroNombre" (input)="filterPacientes()" />
@@ -26,54 +30,77 @@
         </select>
     </div>
 
-    <table class="alertas-table">
-        <thead>
-            <tr>
-                <th>Nombre del Paciente</th>
-                <th>Tipo de Alerta</th>
-                <th>Nivel de Alerta</th>
-                <th>Fecha</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let alerta of alertasFiltradas; let i = index">
-                <td>{{ alerta.nombrePaciente }}</td>
-                <td>{{ alerta.tipoAlerta }}</td>
-                <td>{{ alerta.nivelAlerta }}</td>
-                <td>{{ alerta.fechaAlerta | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
-                <td>
-                    <button (click)="editarAlerta(i)">Editar</button>
-                    <button (click)="eliminarAlerta(i)">Eliminar</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <!-- Contador de actualización -->
+    <div class="contador-actualizacion text-center my-3">
+        <p>♻️ Actualizando en <strong>{{ contadorActualizacion }}</strong> segundos...</p>
+    </div>
 
-    <!-- Modal para editar alerta -->
+    <!-- Exportar PDF -->
+<!--     <div class="actions">
+        <button class="btn btn-primary" (click)="exportarPDF()">📄 Exportar PDF</button>
+    </div> -->
+
+    <!-- Tabla de Alertas -->
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="table-primary">
+                <tr>
+                    <th>Paciente</th>
+                    <th>Tipo de Alerta</th>
+                    <th>Nivel</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let alerta of alertasFiltradas; let i = index"
+                    [ngClass]="{'alerta-alta': alerta.nivelAlerta === 'Alta'}">
+                    <td>{{ alerta.nombrePaciente }}</td>
+                    <td>{{ alerta.tipoAlerta }}</td>
+                    <td>{{ alerta.nivelAlerta }}</td>
+                    <td>{{ alerta.fechaAlerta | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" (click)="editarAlerta(i)">✏️ Editar</button>
+                        <button class="btn btn-sm btn-danger" (click)="eliminarAlerta(i)">🗑️ Eliminar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <button class="btn btn-secondary" (click)="anteriorPagina()" [disabled]="paginaActual === 1">⬅️
+            Anterior</button>
+        <span><strong>Página {{ paginaActual }}</strong></span>
+        <button class="btn btn-secondary" (click)="siguientePagina()"
+            [disabled]="paginaActual * alertasPorPagina >= alertas.length">Siguiente ➡️</button>
+    </div>
+
+    <!-- Modal para Editar -->
     <div class="modal-backdrop-custom" *ngIf="mostrarModal">
         <div class="modal-custom">
             <h2>Editar Alerta</h2>
             <form (ngSubmit)="guardarAlerta()">
-                <label for="nombre">Nombre del Paciente:</label>
-                <input type="text" id="nombre" [(ngModel)]="alertaEditando.nombrePaciente" name="nombrePaciente" />
+                <label for="nombre">Paciente:</label>
+                <input type="text" id="nombre" [(ngModel)]="alertaEditando.nombrePaciente" name="nombrePaciente"
+                    class="form-control">
 
                 <label for="tipo">Tipo de Alerta:</label>
-                <select id="tipo" [(ngModel)]="alertaEditando.tipoAlerta" name="tipoAlerta">
+                <select id="tipo" [(ngModel)]="alertaEditando.tipoAlerta" name="tipoAlerta" class="form-select">
                     <option *ngFor="let tipo of tipos" [value]="tipo">{{ tipo }}</option>
                 </select>
 
                 <label for="nivel">Nivel de Alerta:</label>
-                <select id="nivel" [(ngModel)]="alertaEditando.nivelAlerta" name="nivelAlerta">
+                <select id="nivel" [(ngModel)]="alertaEditando.nivelAlerta" name="nivelAlerta" class="form-select">
                     <option *ngFor="let nivel of niveles" [value]="nivel">{{ nivel }}</option>
                 </select>
 
                 <div class="modal-actions">
-                    <button type="submit">Guardar</button>
-                    <button type="button" (click)="cerrarModal()">Cancelar</button>
+                    <button class="btn btn-success" type="submit">💾 Guardar</button>
+                    <button class="btn btn-danger" type="button" (click)="cerrarModal()">❌ Cancelar</button>
                 </div>
             </form>
         </div>
     </div>
-
 </div>
