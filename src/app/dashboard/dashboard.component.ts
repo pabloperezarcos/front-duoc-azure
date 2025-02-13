@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { AlertaService, AlertaMedica } from '../services/alerta.service';
+import { Subscription, interval } from 'rxjs';
+/* import { PdfService } from '../services/pdf.service'; */
 
 /**
  * Este componente maneja el dashboard de alertas médicas.
@@ -11,11 +14,11 @@ import { AlertaService, AlertaMedica } from '../services/alerta.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   /**
    * Lista completa de alertas médicas obtenidas del backend.
    */
@@ -77,6 +80,14 @@ export class DashboardComponent implements OnInit {
    */
   niveles = ['Alta', 'Media', 'Baja'];
 
+  contadorActualizacion: number = 10; // Cuenta regresiva para actualizar
+  intervaloSub?: Subscription;
+
+  // Variables para la paginación
+  paginaActual: number = 1;
+  alertasPorPagina: number = 10;
+
+
   /**
    * Constructor del componente.
    * @param msalService Servicio de autenticación con MSAL.
@@ -86,7 +97,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private msalService: MsalService,
     private router: Router,
-    private alertaService: AlertaService
+    private alertaService: AlertaService,
+    /*     private pdfService: PdfService */
   ) { }
 
   /**
@@ -94,15 +106,55 @@ export class DashboardComponent implements OnInit {
    * Carga las alertas médicas desde el backend.
    */
   ngOnInit(): void {
-    // Cargar alertas desde el backend al iniciar
+    this.cargarAlertas();
+
+    // Configurar la actualización automática cada 10 segundos
+    this.intervaloSub = interval(1000).subscribe(() => {
+      if (this.contadorActualizacion === 0) {
+        this.cargarAlertas();
+        this.contadorActualizacion = 10; // Reiniciar contador
+      } else {
+        this.contadorActualizacion--;
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.intervaloSub) {
+      this.intervaloSub.unsubscribe();
+    }
+  }
+
+  cargarAlertas(): void {
     this.alertaService.obtenerAlertas().subscribe({
       next: (data) => {
         this.alertas = data;
-        this.alertasFiltradas = data;
+        this.paginarAlertas();
       },
       error: (error) => console.error('Error al cargar alertas:', error),
     });
   }
+
+  paginarAlertas(): void {
+    const inicio = (this.paginaActual - 1) * this.alertasPorPagina;
+    const fin = inicio + this.alertasPorPagina;
+    this.alertasFiltradas = this.alertas.slice(inicio, fin);
+  }
+
+  siguientePagina(): void {
+    if (this.paginaActual * this.alertasPorPagina < this.alertas.length) {
+      this.paginaActual++;
+      this.paginarAlertas();
+    }
+  }
+
+  anteriorPagina(): void {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+      this.paginarAlertas();
+    }
+  }
+
 
   /**
    * Filtra las alertas médicas en base al nombre del paciente y al nivel de alerta.
@@ -227,6 +279,10 @@ export class DashboardComponent implements OnInit {
       },
       error: (error) => console.error('Logout error:', error)
     });
+  }
+
+  exportarPDF(): void {
+    /*     this.pdfService.generarPDF(this.alertas); */
   }
 
 }
