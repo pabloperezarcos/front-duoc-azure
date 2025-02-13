@@ -75,6 +75,24 @@
         }
     }
 
+    .alerta-alta {
+        background-color: #fff3cd;
+        border-left: 4px solid #ffcc00;
+        /* Resalta más la alerta */
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    button.btn-secondary {
+        min-width: 100px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+
+
 
 
     .actions {
