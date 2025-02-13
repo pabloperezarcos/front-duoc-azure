@@ -42,6 +42,27 @@
         }
     }
 
+    .container-fluid {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+    }
+
+    .table th,
+    .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .table-danger {
+        background-color: #f8d7da !important;
+    }
+
     .filter-container {
         display: flex;
         gap: 1rem;
