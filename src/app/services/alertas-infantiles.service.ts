@@ -14,7 +14,7 @@ export interface AlertaInfantil {
   providedIn: 'root',
 })
 export class AlertasInfantilesService {
-  private apiUrl = 'http://localhost:3000/api/alertasInfantiles'; // URL del backend Kafka
+  private apiUrl = 'http://localhost:9081/api/alertas/enviar'; // URL del backend Kafka
 
   constructor(private http: HttpClient) { }
 
