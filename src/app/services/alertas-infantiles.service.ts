@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environmentKafka } from '../environment/environment';
 
 export interface AlertaInfantil {
   idAlerta?: number;
@@ -14,7 +15,7 @@ export interface AlertaInfantil {
   providedIn: 'root',
 })
 export class AlertasInfantilesService {
-  private apiUrl = 'http://localhost:9081/api/alertas/enviar';
+  private apiUrl = environmentKafka.apiGatewayUrl;
 
   constructor(private http: HttpClient) { }
 

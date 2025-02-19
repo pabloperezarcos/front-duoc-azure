@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environmentRabbitmq } from '../environment/environment';
 
 export interface AlertaMedica {
   idAlerta?: number;
@@ -15,7 +16,7 @@ export interface AlertaMedica {
 })
 export class AlertaService {
 
-  private apiUrl = 'http://localhost:8080/api/alertas';
+  private apiUrl = environmentRabbitmq.apiGatewayUrl;
 
   constructor(private http: HttpClient) { }
 
