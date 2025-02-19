@@ -14,7 +14,6 @@
 
         .logo {
             width: 70px;
-            /* Tamaño del logo */
             height: auto;
         }
 
@@ -87,19 +86,16 @@
 
         .text-info {
             color: #004794e3 !important;
-            /* Azul para "En ejecución" */
         }
 
         .text-warning {
             color: #9f0000 !important;
-            /* Rojo para "Detenido" */
         }
     }
 
     .alerta-alta {
         background-color: #fff3cd;
         border-left: 4px solid #ffcc00;
-        /* Resalta más la alerta */
     }
 
     .table-responsive {
@@ -111,10 +107,6 @@
         cursor: pointer;
         border-radius: 5px;
     }
-
-
-
-
 
     .actions {
         display: flex;
@@ -284,7 +276,6 @@
     }
 }
 
-
 /* Responsividad */
 @media (max-width: 768px) {
     .dashboard-header {
@@ -336,7 +327,6 @@
     }
 
     .alertas-table {
-
         th,
         td {
             font-size: 10px;
