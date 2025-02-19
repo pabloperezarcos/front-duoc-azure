@@ -185,6 +185,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  filterPacientesInfantiles(): void {
+    this.alertasFiltradasInfantiles = this.alertasInfantiles.filter((alertasInfantiles) => {
+      const coincideNombre =
+        !this.filtroNombre ||
+        alertasInfantiles.nombrePaciente
+          .toLowerCase()
+          .includes(this.filtroNombre.toLowerCase());
+      const coincideNivel =
+        !this.filtroNivel || alertasInfantiles.nivelAlerta === this.filtroNivel;
+
+      return coincideNombre && coincideNivel;
+    });
+  }
+
   /**
    * Inicia la generación automática de alertas médicas.
    */
