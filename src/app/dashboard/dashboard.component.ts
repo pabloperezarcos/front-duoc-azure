@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { AlertaService, AlertaMedica } from '../services/alerta.service';
+import { Subscription, interval } from 'rxjs';
+import { AlertasInfantilesService, AlertaInfantil } from '../services/alertas-infantiles.service';
 
 /**
  * Este componente maneja el dashboard de alertas médicas.
@@ -11,29 +14,36 @@ import { AlertaService, AlertaMedica } from '../services/alerta.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit {
-  /**
-   * Lista completa de alertas médicas obtenidas del backend.
-   */
-  alertas: AlertaMedica[] = [];
+export class DashboardComponent implements OnInit, OnDestroy {
 
-  /**
-   * Lista de alertas médicas filtradas para mostrar en la tabla.
-   */
+  /** Alertas de Posta Adulto (RabbitMQ) */
+  alertas: AlertaMedica[] = [];
   alertasFiltradas: AlertaMedica[] = [];
 
-  /**
-   * Estado de visibilidad del modal para editar alertas.
-   */
-  mostrarModal: boolean = false;
+  /** Alertas de Posta Infantil (Kafka) */
+  alertasInfantiles: AlertaInfantil[] = [];
+  alertasFiltradasInfantiles: AlertaInfantil[] = [];
 
-  /**
-   * Alerta médica que se está editando actualmente.
-   */
+  escaneando: boolean = false;
+  intervaloID: any;
+  
+  escaneandoInfantiles: boolean = false;
+  intervaloInfantiles: any;
+  
+  nombres = ['Pablo Pérez', 'María López', 'Byron Jaramillo', 'Ana Martínez'];
+  tipos = ['Cardiaca', 'Neurológica', 'Respiratoria'];
+  niveles = ['Alta', 'Media', 'Baja'];
+
+  nombresInfantiles = ['Pedro Gómez', 'Lucía Torres', 'Martín Díaz', 'Sofía Herrera'];
+  tiposInfantiles = ['Cardiaca', 'Neurológica', 'Respiratoria'];
+  nivelesInfantiles = ['Alta', 'Media', 'Baja'];
+
+  /** MODAL PARA EDITAR */
+  mostrarModal: boolean = false;
   alertaEditando: AlertaMedica = {
     idAlerta: 0,
     nombrePaciente: '',
@@ -42,40 +52,19 @@ export class DashboardComponent implements OnInit {
     fechaAlerta: new Date().toISOString(),
   };
 
-  /**
- * Filtro por nombre de paciente.
- */
   filtroNombre: string = '';
-
-  /**
- * Filtro por nivel de alerta médica.
- */
   filtroNivel: string = '';
 
-  /**
-   * Indicador de si el escáner de alertas está en ejecución.
-   */
-  escaneando: boolean = false;
+  contadorActualizacion: number = 10; // Cuenta regresiva para actualizar
+  intervaloSub?: Subscription;
 
-  /**
-   * ID del intervalo para la generación de alertas automáticas.
-   */
-  intervaloID: any;
+  // Variables para la paginación
+  paginaActual: number = 1;
+  alertasPorPagina: number = 10;
 
-  /**
-   * Lista de nombres de pacientes predefinidos para generar alertas.
-   */
-  nombres = ['Juan Pérez', 'María López', 'Carlos García', 'Ana Martínez'];
+  paginaActualInfantil: number = 1;
+  alertasPorPaginaInfantil: number = 10;
 
-  /**
-   * Lista de tipos de alerta predefinidos para generar alertas.
-   */
-  tipos = ['Cardiaca', 'Neurológica', 'Respiratoria'];
-
-  /**
-   * Lista de niveles de alerta predefinidos para generar alertas.
-   */
-  niveles = ['Alta', 'Media', 'Baja'];
 
   /**
    * Constructor del componente.
@@ -86,7 +75,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private msalService: MsalService,
     private router: Router,
-    private alertaService: AlertaService
+    private alertaService: AlertaService,
+    private alertasInfantilesService: AlertasInfantilesService
   ) { }
 
   /**
@@ -94,15 +84,87 @@ export class DashboardComponent implements OnInit {
    * Carga las alertas médicas desde el backend.
    */
   ngOnInit(): void {
-    // Cargar alertas desde el backend al iniciar
+    this.cargarAlertas();
+    this.cargarAlertasInfantiles();
+
+    // Configurar la actualización automática cada 10 segundos
+    this.intervaloSub = interval(1000).subscribe(() => {
+      if (this.contadorActualizacion === 0) {
+        this.cargarAlertas();
+        this.cargarAlertasInfantiles();
+        this.contadorActualizacion = 10; // Reiniciar contador
+      } else {
+        this.contadorActualizacion--;
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.intervaloSub) {
+      this.intervaloSub.unsubscribe();
+    }
+  }
+
+  cargarAlertas(): void {
     this.alertaService.obtenerAlertas().subscribe({
       next: (data) => {
         this.alertas = data;
-        this.alertasFiltradas = data;
+        this.paginarAlertas();
       },
       error: (error) => console.error('Error al cargar alertas:', error),
     });
   }
+
+  cargarAlertasInfantiles(): void {
+    this.alertasInfantilesService.obtenerAlertas().subscribe({
+      next: (data) => {
+        this.alertasInfantiles = data;
+        this.alertasFiltradasInfantiles = data;
+      },
+      error: (error) => console.error('Error al cargar alertas Infantiles:', error),
+    });
+  }
+
+  paginarAlertas(): void {
+    const inicio = (this.paginaActual - 1) * this.alertasPorPagina;
+    const fin = inicio + this.alertasPorPagina;
+    this.alertasFiltradas = this.alertas.slice(inicio, fin);
+  }
+
+  siguientePagina(): void {
+    if (this.paginaActual * this.alertasPorPagina < this.alertas.length) {
+      this.paginaActual++;
+      this.paginarAlertas();
+    }
+  }
+
+  anteriorPagina(): void {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+      this.paginarAlertas();
+    }
+  }
+
+  paginarAlertasInfantiles(): void {
+    const inicio = (this.paginaActualInfantil - 1) * this.alertasPorPaginaInfantil;
+    const fin = inicio + this.alertasPorPaginaInfantil;
+    this.alertasFiltradasInfantiles = this.alertasInfantiles.slice(inicio, fin);
+  }
+
+  siguientePaginaInfantil(): void {
+    if (this.paginaActualInfantil * this.alertasPorPaginaInfantil < this.alertasInfantiles.length) {
+      this.paginaActualInfantil++;
+      this.paginarAlertasInfantiles();
+    }
+  }
+
+  anteriorPaginaInfantil(): void {
+    if (this.paginaActualInfantil > 1) {
+      this.paginaActualInfantil--;
+      this.paginarAlertasInfantiles();
+    }
+  }
+
 
   /**
    * Filtra las alertas médicas en base al nombre del paciente y al nivel de alerta.
@@ -116,6 +178,20 @@ export class DashboardComponent implements OnInit {
           .includes(this.filtroNombre.toLowerCase());
       const coincideNivel =
         !this.filtroNivel || alerta.nivelAlerta === this.filtroNivel;
+
+      return coincideNombre && coincideNivel;
+    });
+  }
+
+  filterPacientesInfantiles(): void {
+    this.alertasFiltradasInfantiles = this.alertasInfantiles.filter((alertasInfantiles) => {
+      const coincideNombre =
+        !this.filtroNombre ||
+        alertasInfantiles.nombrePaciente
+          .toLowerCase()
+          .includes(this.filtroNombre.toLowerCase());
+      const coincideNivel =
+        !this.filtroNivel || alertasInfantiles.nivelAlerta === this.filtroNivel;
 
       return coincideNombre && coincideNivel;
     });
@@ -149,11 +225,35 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * Detiene la generación automática de alertas médicas.
-   */
+  * Detiene la generación automática de alertas médicas.
+  */
   detenerEscaner(): void {
     this.escaneando = false;
     clearInterval(this.intervaloID);
+  }
+
+  iniciarEscanerInfantil(): void {
+    if (!this.escaneandoInfantiles) {
+      this.escaneandoInfantiles = true;
+      this.intervaloInfantiles = setInterval(() => {
+        const nuevaAlertaI: AlertaInfantil = {
+          nombrePaciente: this.nombresInfantiles[Math.floor(Math.random() * this.nombresInfantiles.length)],
+          tipoAlerta: this.tiposInfantiles[Math.floor(Math.random() * this.tiposInfantiles.length)],
+          nivelAlerta: this.nivelesInfantiles[Math.floor(Math.random() * this.nivelesInfantiles.length)],
+          fechaAlerta: new Date().toISOString(),
+        };
+
+        this.alertasInfantilesService.guardarAlerta(nuevaAlertaI).subscribe({
+          next: (alerta) => this.alertasInfantiles.push(alerta),
+          error: (error) => console.error('Error al guardar alerta infantil:', error),
+        });
+      }, 10000);
+    }
+  }
+
+  detenerEscanerInfantil(): void {
+    this.escaneandoInfantiles = false;
+    clearInterval(this.intervaloInfantiles);
   }
 
   /**
@@ -228,5 +328,6 @@ export class DashboardComponent implements OnInit {
       error: (error) => console.error('Logout error:', error)
     });
   }
+
 
 }

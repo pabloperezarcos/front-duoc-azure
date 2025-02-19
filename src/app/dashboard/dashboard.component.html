@@ -1,79 +1,161 @@
-<div class="dashboard">
-    <div class="dashboard-header">
-        <img src="assets/images/logo.png" alt="Logo del Sistema de Alertas Médicas" class="logo">
-        <h1>Dashboard - Alertas Médicas</h1>
-        <button class="logout-btn" (click)="logout()">Cerrar Sesión</button>
-    </div>
-    <div class="actions">
-        <button (click)="iniciarEscaner()" [disabled]="escaneando">Iniciar Escáner</button>
-        <button (click)="detenerEscaner()" [disabled]="!escaneando">Detener Escáner</button>
-    </div>
-    <div class="status-message">
-        <p *ngIf="escaneando" class="text-info">Escáner en ejecución...</p>
-        <p *ngIf="!escaneando" class="text-warning">Escáner detenido.</p>
+<div class="container-fluid py-4">
+    <!-- Encabezado -->
+    <div class="d-flex justify-content-between align-items-center bg-white shadow-sm p-3 rounded">
+        <img src="assets/images/logo.png" alt="Logo" class="img-fluid" style="width: 60px;">
+        <h1 class="text-primary fw-bold">Dashboard - Alertas Médicas</h1>
+        <button class="btn btn-danger" (click)="logout()">
+            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+        </button>
     </div>
 
-    <div class="filter-container">
-        <label for="nombre">Filtrar por nombre:</label>
-        <input type="text" id="nombre" [(ngModel)]="filtroNombre" (input)="filterPacientes()" />
-
-        <label for="nivel">Filtrar por nivel de alerta:</label>
-        <select id="nivel" [(ngModel)]="filtroNivel" (change)="filterPacientes()">
-            <option value="">Todos</option>
-            <option value="Alta">Alta</option>
-            <option value="Media">Media</option>
-            <option value="Baja">Baja</option>
-        </select>
+    <!-- Contador de actualización -->
+    <div class="text-center my-3">
+        <p class="text-muted fw-semibold">
+            ♻️ Actualizando en <strong>{{ contadorActualizacion }}</strong> segundos...
+        </p>
     </div>
 
-    <table class="alertas-table">
-        <thead>
-            <tr>
-                <th>Nombre del Paciente</th>
-                <th>Tipo de Alerta</th>
-                <th>Nivel de Alerta</th>
-                <th>Fecha</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let alerta of alertasFiltradas; let i = index">
-                <td>{{ alerta.nombrePaciente }}</td>
-                <td>{{ alerta.tipoAlerta }}</td>
-                <td>{{ alerta.nivelAlerta }}</td>
-                <td>{{ alerta.fechaAlerta | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
-                <td>
-                    <button (click)="editarAlerta(i)">Editar</button>
-                    <button (click)="eliminarAlerta(i)">Eliminar</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <!-- Contenedor de tablas -->
+    <div class="row mt-4">
+        <!-- Tabla Posta Adultos (RabbitMQ) -->
+        <div class="col-md-6">
+            <div class="text-center mb-2">
+                <img src="assets/images/rabbitmq.svg" alt="RabbitMQ Logo" class="img-fluid" style="width: 80px;">
+            </div>
 
-    <!-- Modal para editar alerta -->
-    <div class="modal-backdrop-custom" *ngIf="mostrarModal">
-        <div class="modal-custom">
-            <h2>Editar Alerta</h2>
-            <form (ngSubmit)="guardarAlerta()">
-                <label for="nombre">Nombre del Paciente:</label>
-                <input type="text" id="nombre" [(ngModel)]="alertaEditando.nombrePaciente" name="nombrePaciente" />
+            <h2 class="text-primary text-center">Posta Adultos</h2>
 
-                <label for="tipo">Tipo de Alerta:</label>
-                <select id="tipo" [(ngModel)]="alertaEditando.tipoAlerta" name="tipoAlerta">
-                    <option *ngFor="let tipo of tipos" [value]="tipo">{{ tipo }}</option>
-                </select>
+            <!-- Filtro de Pacientes Adultos -->
+            <div class="mb-3">
+                <input type="text" class="form-control" placeholder="Filtrar por nombre de paciente"
+                    [(ngModel)]="alertasFiltradas" (input)="filterPacientes()">
+            </div>
 
-                <label for="nivel">Nivel de Alerta:</label>
-                <select id="nivel" [(ngModel)]="alertaEditando.nivelAlerta" name="nivelAlerta">
-                    <option *ngFor="let nivel of niveles" [value]="nivel">{{ nivel }}</option>
-                </select>
+            <!-- Controles Adultos -->
+            <div class="d-flex justify-content-center gap-3 mb-2">
+                <button class="btn btn-success" (click)="iniciarEscaner()" [disabled]="escaneando">
+                    <i class="bi bi-play-fill"></i> Iniciar Escáner
+                </button>
+                <button class="btn btn-warning" (click)="detenerEscaner()" [disabled]="!escaneando">
+                    <i class="bi bi-stop-fill"></i> Detener Escáner
+                </button>
+            </div>
 
-                <div class="modal-actions">
-                    <button type="submit">Guardar</button>
-                    <button type="button" (click)="cerrarModal()">Cancelar</button>
-                </div>
-            </form>
+            <!-- Estado del Escáner -->
+            <div class="text-center my-2">
+                <span *ngIf="escaneando" class="text-success fw-bold">
+                    <i class="bi bi-check-circle-fill"></i> Escáner en ejecución...
+                </span>
+                <span *ngIf="!escaneando" class="text-danger fw-bold">
+                    <i class="bi bi-x-circle-fill"></i> Escáner detenido.
+                </span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Paciente</th>
+                            <th>Tipo de Alerta</th>
+                            <th>Nivel</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let alerta of alertasFiltradas; let i = index"
+                            [ngClass]="{'table-danger': alerta.nivelAlerta === 'Alta'}">
+                            <td>{{ alerta.nombrePaciente }}</td>
+                            <td>{{ alerta.tipoAlerta }}</td>
+                            <td>{{ alerta.nivelAlerta }}</td>
+                            <td>{{ alerta.fechaAlerta | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" (click)="editarAlerta(i)">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" (click)="eliminarAlerta(i)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Paginación -->
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <button class="btn btn-secondary" (click)="anteriorPagina()" [disabled]="paginaActual === 1">⬅️
+                    Anterior</button>
+                <span><strong>Página {{ paginaActual }}</strong></span>
+                <button class="btn btn-secondary" (click)="siguientePagina()"
+                    [disabled]="paginaActual * alertasPorPagina >= alertas.length">Siguiente ➡️</button>
+            </div>
+        </div>
+
+        <!-- Tabla Posta Infantil (Kafka) -->
+        <div class="col-md-6">
+            <div class="text-center mb-2">
+                <img src="assets/images/kafka.svg" alt="RabbitMQ Logo" class="img-fluid" style="width: 52px;">
+            </div>
+            <h2 class="text-success text-center">Posta Infantil</h2>
+
+            <!-- Filtro de Pacientes Infantiles -->
+            <div class="mb-3">
+                <input type="text" class="form-control" placeholder="Filtrar por nombre de paciente"
+                    [(ngModel)]="alertasFiltradasInfantiles" (input)="filterPacientesInfantiles()">
+            </div>
+
+            <!-- Controles Infantil -->
+            <div class="d-flex justify-content-center gap-3 mb-2">
+                <button class="btn btn-success" (click)="iniciarEscanerInfantil()" [disabled]="escaneandoInfantiles">
+                    <i class="bi bi-play-fill"></i> Iniciar Escáner
+                </button>
+                <button class="btn btn-warning" (click)="detenerEscanerInfantil()" [disabled]="!escaneandoInfantiles">
+                    <i class="bi bi-stop-fill"></i> Detener Escáner
+                </button>
+            </div>
+
+            <!-- Estado del Escáner -->
+            <div class="text-center my-2">
+                <span *ngIf="escaneandoInfantiles" class="text-success fw-bold">
+                    <i class="bi bi-check-circle-fill"></i> Escáner en ejecución...
+                </span>
+                <span *ngIf="!escaneandoInfantiles" class="text-danger fw-bold">
+                    <i class="bi bi-x-circle-fill"></i> Escáner detenido.
+                </span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-success">
+                        <tr>
+                            <th>Paciente</th>
+                            <th>Tipo de Alerta</th>
+                            <th>Nivel</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let alerta of alertasFiltradasInfantiles; let i = index"
+                            [ngClass]="{'table-danger': alerta.nivelAlerta === 'Alta'}">
+                            <td>{{ alerta.nombrePaciente }}</td>
+                            <td>{{ alerta.tipoAlerta }}</td>
+                            <td>{{ alerta.nivelAlerta }}</td>
+                            <td>{{ alerta.fechaAlerta | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Paginación Infantil -->
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <button class="btn btn-secondary" (click)="anteriorPaginaInfantil()"
+                    [disabled]="paginaActualInfantil === 1">⬅️ Anterior</button>
+                <span><strong>Página {{ paginaActualInfantil }}</strong></span>
+                <button class="btn btn-secondary" (click)="siguientePaginaInfantil()"
+                    [disabled]="paginaActualInfantil * alertasPorPaginaInfantil >= alertasInfantiles.length">Siguiente
+                    ➡️</button>
+            </div>
+
         </div>
     </div>
-
 </div>

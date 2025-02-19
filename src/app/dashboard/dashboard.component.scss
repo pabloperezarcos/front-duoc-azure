@@ -14,7 +14,6 @@
 
         .logo {
             width: 70px;
-            /* Tamaño del logo */
             height: auto;
         }
 
@@ -42,6 +41,27 @@
         }
     }
 
+    .container-fluid {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+    }
+
+    .table th,
+    .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .table-danger {
+        background-color: #f8d7da !important;
+    }
+
     .filter-container {
         display: flex;
         gap: 1rem;
@@ -66,16 +86,27 @@
 
         .text-info {
             color: #004794e3 !important;
-            /* Azul para "En ejecución" */
         }
 
         .text-warning {
             color: #9f0000 !important;
-            /* Rojo para "Detenido" */
         }
     }
 
+    .alerta-alta {
+        background-color: #fff3cd;
+        border-left: 4px solid #ffcc00;
+    }
 
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    button.btn-secondary {
+        min-width: 100px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
 
     .actions {
         display: flex;
@@ -245,7 +276,6 @@
     }
 }
 
-
 /* Responsividad */
 @media (max-width: 768px) {
     .dashboard-header {
@@ -297,7 +327,6 @@
     }
 
     .alertas-table {
-
         th,
         td {
             font-size: 10px;
