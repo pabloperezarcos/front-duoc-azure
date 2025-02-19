@@ -25,6 +25,12 @@
 
             <h2 class="text-primary text-center">Posta Adultos</h2>
 
+            <!-- Filtro de Pacientes Adultos -->
+            <div class="mb-3">
+                <input type="text" class="form-control" placeholder="Filtrar por nombre de paciente"
+                    [(ngModel)]="alertasFiltradas" (input)="filterPacientes()">
+            </div>
+
             <!-- Controles Adultos -->
             <div class="d-flex justify-content-center gap-3 mb-2">
                 <button class="btn btn-success" (click)="iniciarEscaner()" [disabled]="escaneando">
@@ -91,6 +97,12 @@
                 <img src="assets/images/kafka.svg" alt="RabbitMQ Logo" class="img-fluid" style="width: 52px;">
             </div>
             <h2 class="text-success text-center">Posta Infantil</h2>
+
+            <!-- Filtro de Pacientes Infantiles -->
+            <div class="mb-3">
+                <input type="text" class="form-control" placeholder="Filtrar por nombre de paciente"
+                    [(ngModel)]="alertasFiltradasInfantiles" (input)="filterPacientesInfantiles()">
+            </div>
 
             <!-- Controles Infantil -->
             <div class="d-flex justify-content-center gap-3 mb-2">
