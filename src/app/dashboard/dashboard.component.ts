@@ -24,25 +24,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
   alertas: AlertaMedica[] = [];
   alertasFiltradas: AlertaMedica[] = [];
 
-  escaneando: boolean = false;
-  intervaloID: any;
-
-  nombres = ['Pablo Pérez', 'María López', 'Byron Jaramillo', 'Ana Martínez'];
-  tipos = ['Cardiaca', 'Neurológica', 'Respiratoria'];
-  niveles = ['Alta', 'Media', 'Baja'];
-
-
   /** Alertas de Posta Infantil (Kafka) */
   alertasInfantiles: AlertaInfantil[] = [];
   alertasFiltradasInfantiles: AlertaInfantil[] = [];
 
+  escaneando: boolean = false;
+  intervaloID: any;
+  
   escaneandoInfantiles: boolean = false;
   intervaloInfantiles: any;
+  
+  nombres = ['Pablo Pérez', 'María López', 'Byron Jaramillo', 'Ana Martínez'];
+  tipos = ['Cardiaca', 'Neurológica', 'Respiratoria'];
+  niveles = ['Alta', 'Media', 'Baja'];
 
   nombresInfantiles = ['Pedro Gómez', 'Lucía Torres', 'Martín Díaz', 'Sofía Herrera'];
   tiposInfantiles = ['Cardiaca', 'Neurológica', 'Respiratoria'];
   nivelesInfantiles = ['Alta', 'Media', 'Baja'];
-
 
   /** MODAL PARA EDITAR */
   mostrarModal: boolean = false;
