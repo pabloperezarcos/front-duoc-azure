@@ -43,9 +43,10 @@ export class AlertaService {
   /**
  * URL base de la API de alertas médicas.
  */
-  //private apiUrl = 'http://localhost:8080/api/alertas';
-  //private apiUrl = 'http://ip172-18-0-61-cu1td72im2rg00clsks0-8080.direct.labs.play-with-docker.com/api/alertas';
-  private apiUrl = 'https://srefrgfwmd.execute-api.us-east-1.amazonaws.com/api/alertas';
+  private apiUrl = 'http://localhost:8080/api/alertas';
+  //private apiUrl = 'http://ip172-18-0-10-cuglrmi91nsg009s6qa0-8080.direct.labs.play-with-docker.com/api/alertas'
+
+  //private apiUrl = 'https://srefrgfwmd.execute-api.us-east-1.amazonaws.com/api/alertas';
 
   /**
  * Constructor del servicio.
