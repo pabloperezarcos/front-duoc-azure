@@ -20,7 +20,8 @@ export class AlertasInfantilesService {
   constructor(private http: HttpClient) { }
 
   obtenerAlertas(): Observable<AlertaInfantil[]> {
-    return this.http.get<AlertaInfantil[]>(this.apiUrl);
+    //return this.http.get<AlertaInfantil[]>(this.apiUrl);
+    return this.http.get<any[]>(`${this.apiUrl}/todas`);
   }
 
   guardarAlerta(alerta: AlertaInfantil): Observable<AlertaInfantil> {
