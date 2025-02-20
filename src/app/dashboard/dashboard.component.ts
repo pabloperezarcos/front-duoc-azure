@@ -30,15 +30,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   escaneando: boolean = false;
   intervaloID: any;
-  
+
   escaneandoInfantiles: boolean = false;
   intervaloInfantiles: any;
-  
-  nombres = ['Pablo Pérez', 'María López', 'Byron Jaramillo', 'Ana Martínez'];
-  tipos = ['Cardiaca', 'Neurológica', 'Respiratoria'];
+
+  nombres = ['Pablo Perez', 'Maria Lopez', 'Byron Jaramillo', 'Ana Martinez'];
+  tipos = ['Cardiaca', 'Neurologica', 'Respiratoria'];
   niveles = ['Alta', 'Media', 'Baja'];
 
-  nombresInfantiles = ['Pedro Gómez', 'Lucía Torres', 'Martín Díaz', 'Sofía Herrera'];
+  nombresInfantiles = ['Pedro Gomez', 'Lucia Torres', 'Martin Diaz', 'Sofia Herrera'];
   tiposInfantiles = ['Cardiaca', 'Neurológica', 'Respiratoria'];
   nivelesInfantiles = ['Alta', 'Media', 'Baja'];
 
@@ -119,7 +119,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.alertasInfantilesService.obtenerAlertas().subscribe({
       next: (data) => {
         this.alertasInfantiles = data;
-        this.alertasFiltradasInfantiles = data;
+        this.paginarAlertasInfantiles();
       },
       error: (error) => console.error('Error al cargar alertas Infantiles:', error),
     });
@@ -195,6 +195,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
       return coincideNombre && coincideNivel;
     });
+    this.paginarAlertasInfantiles();
   }
 
   /**
